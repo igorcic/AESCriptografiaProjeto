@@ -73,6 +73,29 @@ def trata_chave(chave):
     elif len(chave) > 16:
         chave = chave[:16]
 
+def capturar_foto():
+    # Inicializa a câmera (use 0 para a câmera padrão)
+    cap = cv2.VideoCapture(0)
+
+    if not cap.isOpened():
+        print("Erro ao abrir a câmera")
+        return None
+
+    # Captura um quadro da câmera
+    ret, frame = cap.read()
+
+    # Fecha a câmera
+    cap.release()
+
+    if not ret:
+        print("Erro ao capturar a foto")
+        return None
+
+    # Salva a imagem capturada com o nome "cifra.png"
+    cv2.imwrite("cifra.png", frame)
+
+    return frame
+
 
 def main():
     chave = []
@@ -101,9 +124,28 @@ def main():
     op2 = int(input('1:Cifrar\n2:Decifrar\n'))
 
     if op2 == 1:
-        word = cv2.imread('cifra.png')
-        print('ATENCAO:  NO ARQUIVO, SOMENTE SAO ACEITOS NUMEROS INTEIROS SEPARADOS POR ESPACO')
-        opk = int(input('Chave a ser usada:\n\n0:arquivo.txt\n1:Chave propria\n2:Chave aleatoria\n'))
+        print("Escolha uma opção:")
+        print("1: Capturar foto para criptografia")
+        print("2: Usar imagem existente")
+        op_capture = int(input("Opção: "))
+
+        if op_capture == 1:
+            # Capturar uma foto
+            frame = capturar_foto()
+
+            if frame is None:
+                return
+            else:
+                # Salvar a imagem capturada como "cifra.png"
+                cv2.imwrite("cifra.png", frame)
+                word = frame
+        elif op_capture == 2:
+            word = cv2.imread('cifra.png')
+        else:
+            print("Opção inválida")
+            return
+        print('ATENÇÃO: NO ARQUIVO, SOMENTE SÃO ACEITOS NÚMEROS INTEIROS SEPARADOS POR ESPAÇO')
+        opk = int(input('Chave a ser usada:\n\n0: arquivo.txt\n1: Chave própria\n2: Chave aleatória\n'))
 
     else:
         word = cv2.imread('cifrada.png')
